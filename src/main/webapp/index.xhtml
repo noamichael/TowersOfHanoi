@@ -1,0 +1,244 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Michael's Tower of Hanoi</title>
+        <style>
+
+            td{
+                vertical-align: bottom;
+            }
+            .ui-growl{
+                position: absolute;
+                right: 0px;
+                top: 50px;
+            }
+            .inner{
+                height: 376px;
+                width: 380px;
+                text-align: center;
+                background: url("resources/images/column.png") no-repeat center;
+            }
+            .inner td{
+                vertical-align: bottom;
+            }
+            .turns{
+                position: fixed;
+                top:10px;
+                left: 10px;
+            }
+            .empty{
+                background: maroon;
+                color: white;
+                width: 100%;
+                height: 21px;
+
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <p:dialog widgetVar="winPanel" style="background: black">
+            <p:graphicImage value="/resources/images/firework1.gif"/>
+            <p:graphicImage value="/resources/images/firework2.gif"/>
+            <p:graphicImage value="/resources/images/firework3.gif"/>
+        </p:dialog>
+        <div style=" position: fixed;top:0px;right: 0px;">
+            <h:form>
+                <p:commandButton type="submit" ajax="false" action="#{gameController.reset()}" value="Reset"/>
+            </h:form>
+        </div>
+        <h:form id="gameForm">
+            <p:growl id="messages"/>
+            <div class="turns">
+                <b>Turns:</b> #{gameController.numberOfTurns} <b> Min:</b> #{gameController.minimumTurns}
+            </div>
+            <center>
+                <table>
+                    <tr style="height: 100%">
+                        <td style="height: 100%">
+                            <h:panelGrid id="columnOnePanel" styleClass="inner" style="min-width: 152px; min-height: 80px">
+                                <p:droppable >
+                                    <p:ajax listener="#{gameController.onColumnOneDrop}" update="gameForm, messages"/>
+                                </p:droppable>
+                                <p:outputPanel>
+                                    <ui:repeat id="columnOne" var="disk" value="#{gameController.columnOne}" varStatus="index">
+                                        <ui:fragment rendered="#{index.index == 0}">
+                                            <center>
+                                                <h:commandLink onmousedown="colOne0();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}"  revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand   name="colOne0" actionListener="#{gameController.onColumnOneClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 1}">
+                                            <center>
+                                                <h:commandLink onmousedown="colOne1();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand  name="colOne1" actionListener="#{gameController.onColumnOneClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 2}">
+                                            <center>
+                                                <h:commandLink onmousedown="colOne2();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand name="colOne2" actionListener="#{gameController.onColumnOneClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 3}">
+                                            <center>
+                                                <h:commandLink onmousedown="colOne3();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand  name="colOne3" actionListener="#{gameController.onColumnOneClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                    </ui:repeat>
+                                    <div class="empty">
+                                        <ui:fragment rendered="#{gameController.columnOne.isEmpty()}">
+                                            Drag here!
+                                        </ui:fragment>
+                                    </div>
+                                </p:outputPanel>
+                            </h:panelGrid>
+                        </td> 
+                        <td style="height: 100%">
+                            <h:panelGrid id="columnTwoPanel" styleClass="inner" style="min-width: 152px; min-height: 80px">
+                                <p:droppable >
+                                    <p:ajax listener="#{gameController.onColumnTwoDrop}" update="gameForm, messages"/>
+                                </p:droppable>
+                                <p:outputPanel>
+                                    <ui:repeat id="columnTwo" var="disk" value="#{gameController.columnTwo}" varStatus="index">
+                                        <ui:fragment rendered="#{index.index == 0}">
+                                            <center>
+                                                <h:commandLink onmousedown="colTwo0();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand   name="colTwo0" actionListener="#{gameController.onColumnTwoClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 1}">
+                                            <center>
+                                                <h:commandLink onmousedown="colTwo1();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand  name="colTwo1" actionListener="#{gameController.onColumnTwoClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 2}">
+                                            <center>
+                                                <h:commandLink onmousedown="colTwo2();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand name="colTwo2" actionListener="#{gameController.onColumnTwoClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 3}">
+                                            <center>
+                                                <h:commandLink onmousedown="colTwo3();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand  name="colTwo3" actionListener="#{gameController.onColumnTwoClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                    </ui:repeat>
+                                    <div class="empty">
+                                        <ui:fragment rendered="#{gameController.columnTwo.isEmpty()}">
+                                            Drag here!
+                                        </ui:fragment>
+                                    </div>
+                                </p:outputPanel>
+                            </h:panelGrid>
+                        </td>
+                        <td style="height: 100%">
+                            <h:panelGrid id="columnThreePanel" styleClass="inner" style="min-width: 152px; min-height: 80px">
+                                <p:droppable>
+                                    <p:ajax listener="#{gameController.onColumnThreeDrop}" update="gameForm, messages"/>
+                                </p:droppable>
+                                <p:outputPanel>
+                                    <ui:repeat id="columnThree" var="disk" value="#{gameController.columnThree}" varStatus="index">
+                                        <ui:fragment rendered="#{index.index == 0}">
+                                            <center>
+                                                <h:commandLink onmousedown="colThree0();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand   name="colThree0" actionListener="#{gameController.onColumnThreeClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 1}">
+                                            <center>
+                                                <h:commandLink onmousedown="colThree1();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand  name="colThree1" actionListener="#{gameController.onColumnThreeClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 2}">
+                                            <center>
+                                                <h:commandLink onmousedown="colThree2();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand name="colThree2" actionListener="#{gameController.onColumnThreeClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{index.index == 3}">
+                                            <center>
+                                                <h:commandLink onmousedown="colThree3();">
+                                                    <p:graphicImage value="/resources/images/#{disk.image}.png">                                                                                                                                                                       
+                                                        <p:draggable disabled="#{gameController.won or disk.position != 1}" revert="true" />
+                                                    </p:graphicImage>
+                                                </h:commandLink>
+                                                <p:remoteCommand  name="colThree3" actionListener="#{gameController.onColumnThreeClick(disk)}"/>
+                                            </center>
+                                        </ui:fragment>
+                                    </ui:repeat>
+                                    <div class="empty">
+                                        <ui:fragment rendered="#{gameController.columnThree.isEmpty()}">
+                                            Drag here!
+                                        </ui:fragment>
+                                    </div>
+                                </p:outputPanel>
+                            </h:panelGrid>
+                        </td> 
+                    </tr>
+                </table>
+            </center>
+            <ui:fragment rendered="#{gameController.won and gameController.numberOfTurns == gameController.minimumTurns}">
+                <script>
+                    PF('winPanel').show();
+                </script>
+                <p:media value="/resources/sounds/johnnyWonGood.mp3"  player="quicktime" style="visibility: hidden">
+                    <f:param name="autoPlay" value="true"/>
+                </p:media>
+            </ui:fragment>
+        </h:form>
+    </h:body>
+</html>
+
