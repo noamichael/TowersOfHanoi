@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Stateful;
+import javax.enterprise.context.SessionScoped;
 
 /**
  *
  * @author Michael Kucinski
  */
-@Stateful
+@SessionScoped
 public class GameManagerDefault implements GameManagerLocal, Serializable {
 
     private final static int NUMBER_OF_DISKS = 4;
